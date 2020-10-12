@@ -37,9 +37,11 @@ jobs:
           #nuget-api-key: # optional
           # Source to scope the NuGet API Key to.
           #nuget-api-key-source: # optional
+          
       - uses: actions/setup-dotnet@v1
         with:
             dotnet-version: '3.1.x' # SDK Version to use; x will use the latest version of the 3.1 channel
+            
       - name: run minver
         id: version
         uses: thefringeninja/action-minver
