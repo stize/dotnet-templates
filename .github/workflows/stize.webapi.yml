@@ -46,4 +46,9 @@ jobs:
         id: version
         uses: thefringeninja/action-minver@2.0.0-preview1
               
-      - run: nuget pack stize.webapi/Template.nuspec -version ${{ steps.version.outputs.version }}
+      - run: |
+            nuget pack stize.webapi/Template.nuspec -version ${{ steps.version.outputs.version }}
+            
+      - run: |
+            dotnet nuget add source https://nuget.pkg.github.com/stize/index.json -n github -u stize -p GH_TOKEN [--store-password-in-clear-text]
+            dotnet nuget push stize.webapi.${{ steps.version.outputs.version }} --source "github"
