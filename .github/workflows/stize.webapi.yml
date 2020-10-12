@@ -1,11 +1,12 @@
-name: CI
+name: stize.webapi-CD
 
 on:
   push:
     branches: [ master ]
 
 jobs:
-  build:    runs-on: ubuntu-latest
+  build:
+    runs-on: ubuntu-latest
 
     steps:
       # Checks-out your repository under $GITHUB_WORKSPACE, so your job can access it
