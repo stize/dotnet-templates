@@ -5,6 +5,7 @@
     <version>0.0.0</version>
     <description>stize webapi template</description>
     <authors>stize</authors>
+	<repository type="git" url="https://github.com/stize/dotnet-templates" />
     <packageTypes>
       <packageType name="Template" />
     </packageTypes>
