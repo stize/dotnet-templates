@@ -1,0 +1,12 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "stize",
+  "classifications": ["stize"], 
+  "name": "stize webapi template",
+  "identity": "stize.webapi", 
+  "shortName": "stize.webapi", 
+  "sourceName": "stize.webapi",
+  "guids": [
+    "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF"
+  ]
+}

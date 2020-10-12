@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>stize.webapi</id>
+    <version>0.0.0</version>
+    <description>stize webapi template</description>
+    <authors>stize</authors>
+    <packageTypes>
+      <packageType name="Template" />
+    </packageTypes>
+  </metadata>
+  <files>
+    <file src="**" exclude="**\.vs\**;content\**\bin\**\*;content\**\obj\**\*;content\**\*.user;**.orig;content\stize.webapi.sln" />
+  </files>
+</package>
