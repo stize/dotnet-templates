@@ -24,6 +24,8 @@ jobs:
       - uses: actions/checkout@v2
         with:
           ref: feature/stize.webapi
+          fetch-depth: 0
+          
       - name: Setup NuGet.exe for use with actions
         # You may pin to the exact commit or the version.
         # uses: NuGet/setup-nuget@255f46e14d51fbc603743e2aa2907954463fbeb9
@@ -35,4 +37,11 @@ jobs:
           #nuget-api-key: # optional
           # Source to scope the NuGet API Key to.
           #nuget-api-key-source: # optional
-      - run: nuget pack stize.webapi/Template.nuspec
+      - uses: actions/setup-dotnet@v1
+        with:
+            dotnet-version: '3.1.x' # SDK Version to use; x will use the latest version of the 3.1 channel
+      - name: run minver
+        id: version
+        uses: thefringeninja/action-minver
+      
+      - run: nuget pack stize.webapi/Template.nuspec -version ${{ steps.version.outputs.version }}
