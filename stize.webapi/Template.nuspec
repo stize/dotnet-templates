@@ -10,6 +10,6 @@
     </packageTypes>
   </metadata>
   <files>
-    <file src="**" exclude="**\.vs\**;content\**\bin\**\*;content\**\obj\**\*;content\**\*.user;**.orig;content\stize.webapi.sln" />
+    <file src="**" exclude="**\.vs\**;content\**\bin\**\*;content\**\obj\**\*;content\**\*.user;**.orig;" />
   </files>
 </package>

@@ -8,5 +8,19 @@
   "sourceName": "stize.webapi",
   "guids": [
     "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF"
-  ]
+  ],
+  "symbols":{
+    "sln": {
+        "type": "parameter",
+        "datatype": "bool",
+        "defaultValue": "true"
+    }
+  },
+  "sources":[{
+    "modifiers": [{
+      "condition": "(!sln)",
+      "exclude": [ "stize.webapi.sln"]
+      }
+    ]
+  }]
 }
