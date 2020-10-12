@@ -51,4 +51,4 @@ jobs:
             
       - run: |
             dotnet nuget add source https://nuget.pkg.github.com/stize/index.json -n github -u stize -p GH_TOKEN --store-password-in-clear-text
-            dotnet nuget push stize.webapi.${{ steps.version.outputs.version }} --source "github"
+            dotnet nuget push stize.webapi.${{ steps.version.outputs.version }}.nupkg --source "github"
