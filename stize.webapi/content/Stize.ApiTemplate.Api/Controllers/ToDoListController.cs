@@ -7,8 +7,8 @@ using Stize.ApiTemplate.Domain.EFCore;
 using Stize.ApiTemplate.Domain.Entities;
 using Stize.ApiTemplate.Domain.Specifications;
 using Stize.DotNet.Delta;
+using Stize.DotNet.Search.Model;
 using Stize.Hosting.AspNetCore.Extensions;
-using Stize.Hosting.AspNetCore.Model;
 using Stize.Mapping.Service;
 
 namespace Stize.ApiTemplate.Api.Controllers

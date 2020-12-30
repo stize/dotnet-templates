@@ -1,14 +1,13 @@
 using System.Collections.Generic;
-using System.Linq;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
-using Microsoft.Extensions.DependencyInjection;
 using Stize.ApiTemplate.Api.Controllers;
 using Stize.ApiTemplate.Api.TestHost.Extensions;
 using Stize.ApiTemplate.Business.Models.ToDoList;
+using Stize.Domain.Model;
 using Stize.DotNet.Delta;
-using Stize.Hosting.AspNetCore.Model;
+using Stize.DotNet.Search.Model;
 using Stize.Testing.Xunit.AspNetCore.Mvc;
 using Stize.Testing.Xunit.AspNetCore.TestHost;
 using Xunit;

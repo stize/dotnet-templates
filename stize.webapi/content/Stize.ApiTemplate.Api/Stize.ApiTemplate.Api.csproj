@@ -7,7 +7,6 @@
   <ItemGroup>
     <PackageReference Include="Stize.Mapping.Service" />
     <PackageReference Include="Stize.Hosting.AspNetCore" />
-    <PackageReference Include="Stize.Hosting.AspNetCore.Delta" />
     <PackageReference Include="Stize.Mapping.AutoMapper" />
   </ItemGroup>
 

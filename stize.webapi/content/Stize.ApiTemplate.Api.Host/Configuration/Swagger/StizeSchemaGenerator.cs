@@ -2,8 +2,8 @@ using System;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
 using Microsoft.OpenApi.Models;
+using Stize.Domain.Model;
 using Stize.DotNet.Delta;
-using Stize.Hosting.AspNetCore.Model;
 using Swashbuckle.AspNetCore.SwaggerGen;
 
 namespace Stize.ApiTemplate.Api.Host.Configuration.Swagger
