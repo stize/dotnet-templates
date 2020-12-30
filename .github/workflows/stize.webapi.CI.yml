@@ -41,4 +41,4 @@ jobs:
       - name: push private
         run: |
             dotnet nuget add source https://nuget.pkg.github.com/stize/index.json -n github -u stize -p ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text
-            dotnet nuget push stize.webapi.${{ steps.version.outputs.version }}.nupkg --source "github"
+            until dotnet nuget push stize.webapi.${{ steps.version.outputs.version }}.nupkg --source "github" --skip-duplicate --no-symbols true; do echo "Retrying"; sleep 1; done
