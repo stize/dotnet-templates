@@ -1,0 +1,26 @@
+{
+  "$schema": "http://json.schemastore.org/template",
+  "author": "Stize",
+  "classifications": ["Stize"], 
+  "name": "Stize Api template",
+  "identity": "stize.webapi", 
+  "shortName": "stize.webapi", 
+  "sourceName": "Stize.ApiTemplate",
+  "guids": [
+    "FFFFFFFF-FFFF-FFFF-FFFF-FFFFFFFFFFFF"
+  ],
+  "symbols":{
+    "sln": {
+        "type": "parameter",
+        "datatype": "bool",
+        "defaultValue": "true"
+    }
+  },
+  "sources":[{
+    "modifiers": [{
+      "condition": "(!sln)",
+      "exclude": [ "Stize.sln"]
+      }
+    ]
+  }]
+}

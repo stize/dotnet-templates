@@ -1,0 +1,19 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Stize.Mapping.Service" />
+    <PackageReference Include="Stize.Hosting.AspNetCore" />
+    <PackageReference Include="Stize.Hosting.AspNetCore.Delta" />
+    <PackageReference Include="Stize.Mapping.AutoMapper" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Stize.ApiTemplate.Domain.EFCore\Stize.ApiTemplate.Domain.EFCore.csproj" />
+    <ProjectReference Include="..\Stize.ApiTemplate.Business\Stize.ApiTemplate.Business.csproj" />
+  </ItemGroup>
+
+</Project>

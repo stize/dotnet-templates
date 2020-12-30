@@ -1,0 +1,33 @@
+<Project>
+  <PropertyGroup>
+	<StizeVersion>0.0.2</StizeVersion>
+  </PropertyGroup>  
+  
+  <ItemGroup Label="Stize">
+    <PackageVersion Include="Stize.Domain" Version="$(StizeVersion)" />
+    <PackageVersion Include="Stize.Domain.i18n" Version="$(StizeVersion)" />
+	
+    <PackageVersion Include="Stize.DotNet.Delta" Version="$(StizeVersion)" />
+    <PackageVersion Include="Stize.DotNet.Extensions" Version="$(StizeVersion)" />
+    <PackageVersion Include="Stize.DotNet.FileSystem" Version="$(StizeVersion)" />
+    <PackageVersion Include="Stize.DotNet.Json" Version="$(StizeVersion)" />
+    <PackageVersion Include="Stize.DotNet.Providers" Version="$(StizeVersion)" />
+    <PackageVersion Include="Stize.DotNet.Result" Version="$(StizeVersion)" />
+    <PackageVersion Include="Stize.DotNet.Search" Version="$(StizeVersion)" />
+    <PackageVersion Include="Stize.DotNet.Search.Specification" Version="$(StizeVersion)" />
+    <PackageVersion Include="Stize.DotNet.Specification" Version="$(StizeVersion)" />
+	
+	<PackageVersion Include="Stize.Hosting.AspNetCore" Version="$(StizeVersion)" />
+    <PackageVersion Include="Stize.Hosting.AspNetCore.Delta" Version="$(StizeVersion)" />
+	    
+    <PackageVersion Include="Stize.Mapping" Version="$(StizeVersion)" />
+    <PackageVersion Include="Stize.Mapping.Service" Version="$(StizeVersion)" />
+    <PackageVersion Include="Stize.Mapping.AutoMapper" Version="$(StizeVersion)" />
+    
+	<PackageVersion Include="Stize.Persistence" Version="$(StizeVersion)" />
+	<PackageVersion Include="Stize.Persistence.EntityFrameworkCore" Version="$(StizeVersion)" />
+	
+	<PackageVersion Include="Stize.Testing.Xunit" Version="$(StizeVersion)" />
+	<PackageVersion Include="Stize.Testing.Xunit.AspNetCore" Version="$(StizeVersion)" />
+  </ItemGroup>  
+</Project>

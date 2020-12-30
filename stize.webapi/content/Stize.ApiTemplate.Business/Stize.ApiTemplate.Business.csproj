@@ -1,0 +1,12 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <PackageReference Include="Stize.Persistence.EntityFrameworkCore" />
+    <PackageReference Include="Stize.Mapping.AutoMapper" />
+    <PackageReference Include="Stize.DotNet.Search.Specification" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\Stize.ApiTemplate.Domain.EFCore\Stize.ApiTemplate.Domain.EFCore.csproj" />
+  </ItemGroup>
+</Project>
