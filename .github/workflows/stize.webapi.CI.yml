@@ -1,4 +1,4 @@
-name: stize.webapi-CD
+name: stize.webapi.CI
 
 on:
   push:
