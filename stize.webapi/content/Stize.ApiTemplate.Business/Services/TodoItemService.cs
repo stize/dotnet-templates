@@ -40,7 +40,8 @@ namespace Stize.ApiTemplate.Business.Services
 
             var query = new MultipleValueInquiry<ToDoItem, T>()
             {
-                SourceSpecification = spec
+                SourceSpecification = spec,
+                SourceQuery = this.repository.GetAll<ToDoItem>()
             };
             var result = await this.dispatcher.HandleAsync(query, cancellationToken);
             return result;
@@ -55,9 +56,9 @@ namespace Stize.ApiTemplate.Business.Services
             {
                 Take = page.Take,
                 Skip = page.Skip,
-
                 SourceSpecification = spec,
-                SourceSorts = page.Sorts
+                SourceSorts = page.Sorts,
+                SourceQuery = this.repository.GetAll<ToDoItem>()
             };
             var result = await this.dispatcher.HandleAsync(query, cancellationToken);
             return result;

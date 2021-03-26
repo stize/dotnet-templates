@@ -15,12 +15,12 @@ namespace Stize.ApiTemplate.Api.Controllers
 {
     [ApiController]
     [Route("ToDoList/{todoListId}/TodoItem")]
-    public class TodoItemController : ControllerBase
+    public class ToDoItemController : ControllerBase
     {
         private readonly IMappingService<EntityDbContext> service;
         private readonly ITodoItemService todoItemService;
 
-        public TodoItemController(IMappingService<EntityDbContext> service, ITodoItemService todoItemService)
+        public ToDoItemController(IMappingService<EntityDbContext> service, ITodoItemService todoItemService)
         {
             this.service = service;
             this.todoItemService = todoItemService;
@@ -57,7 +57,7 @@ namespace Stize.ApiTemplate.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync(int todoListId, CreateToDoItemModel model, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> PostAsync(int todoListId, [FromBody] CreateToDoItemModel model, CancellationToken cancellationToken = default)
         {
             if (todoListId != model.ToDoListId)
             {
@@ -68,7 +68,7 @@ namespace Stize.ApiTemplate.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAsync(int todoListId, int id, UpdateToDoItemModel model, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> PutAsync(int todoListId, int id, [FromBody] UpdateToDoItemModel model, CancellationToken cancellationToken = default)
         {
             if (id != model.Id)
             {
@@ -81,7 +81,7 @@ namespace Stize.ApiTemplate.Api.Controllers
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> PatchAsync(int todoListId, int id, Delta<UpdateToDoItemModel> model, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> PatchAsync(int todoListId, int id, [FromBody] Delta<UpdateToDoItemModel> model, CancellationToken cancellationToken = default)
         {
             if (id != model.GetInstance()?.Id)
             {

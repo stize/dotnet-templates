@@ -38,7 +38,6 @@ namespace Stize.ApiTemplate.Business.Test.ToDoList
         public async Task SearchAsync()
         {
             // Arrange
-            const int todoListId = 1;
             var pageMoq = new Mock<IPageDescriptor>();
 
             this.repositoryMoq

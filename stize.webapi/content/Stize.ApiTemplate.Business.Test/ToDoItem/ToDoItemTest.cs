@@ -1,4 +1,6 @@
+using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using Moq;
@@ -38,7 +40,7 @@ namespace Stize.ApiTemplate.Business.Test.ToDoItem
         {
             // Arrange
             const int id = 1;
-            var todoItem = new Domain.Entities.ToDoItem {Id = id};
+            var todoItem = new Domain.Entities.ToDoItem { Id = id };
 
             this.repositoryMoq
                 .Setup(r => r.FindOneAsync<Domain.Entities.ToDoItem, int>(id, default))
@@ -50,19 +52,23 @@ namespace Stize.ApiTemplate.Business.Test.ToDoItem
             this.repositoryMoq
                 .Setup(r => r.CommitAsync(default))
                 .Returns(Task.CompletedTask);
-            
+
             // Act
             await this.service.CompleteAsync(id, CancellationToken.None);
-            
+
             // Assert
             Assert.True(todoItem.IsCompleted);
         }
-        
+
         [Fact]
         public async Task GetAllAsync()
         {
             // Arrange
             const int todoListId = 1;
+
+            this.repositoryMoq
+                .Setup(r => r.GetAll<Domain.Entities.ToDoItem>())
+                .Returns(() => Array.Empty<Domain.Entities.ToDoItem>().AsQueryable());
 
             this.inquiryDispatcherMoq
                 .Setup(qd => qd.HandleAsync(It.IsAny<MultipleValueInquiry<Domain.Entities.ToDoItem, ToDoItemModel>>(), default))
@@ -73,10 +79,10 @@ namespace Stize.ApiTemplate.Business.Test.ToDoItem
                         Value = new ToDoItemModel[1]
                     };
                 });
-            
+
             // Act
             var todoItems = await this.service.GetAllAsync<ToDoItemModel>(todoListId, default);
-            
+
             // Assert
             Assert.NotEmpty(todoItems.Value);
         }
@@ -86,6 +92,11 @@ namespace Stize.ApiTemplate.Business.Test.ToDoItem
         {
             // Arrange
             const int todoListId = 1;
+
+            this.repositoryMoq
+                .Setup(r => r.GetAll<Domain.Entities.ToDoItem>())
+                .Returns(() => Array.Empty<Domain.Entities.ToDoItem>().AsQueryable());
+
             var pageMoq = new Mock<IPageDescriptor>();
 
             this.specificationBuilderMoq
@@ -101,10 +112,10 @@ namespace Stize.ApiTemplate.Business.Test.ToDoItem
                         Value = new ToDoItemModel[1]
                     };
                 });
-            
+
             // Act
             var todoItems = await this.service.SearchAsync<ToDoItemModel>(todoListId, pageMoq.Object, default);
-            
+
             // Assert
             Assert.NotEmpty(todoItems.Value);
         }
