@@ -62,15 +62,14 @@ namespace Stize.ApiTemplate.Api.Controllers
         [HttpPut("{id}")]
         public async Task<IActionResult> PutAsync(int id, [FromBody] UpdateToDoListModel model, CancellationToken cancellationToken = default)
         {
-            var exists = await this.service.AnyAsync(new EntityByIdSpecification<ToDoList>(id), cancellationToken);
-            if (!exists)
+            if (id != model.Id)
             {
-                return this.NotFound();
+                return this.BadRequest("ToDoList ID is different in the route and the model");
             }
-            await this.service.ApplyChangesAsync<UpdateToDoListModel, ToDoList, int>(model, cancellationToken);
 
-            var result = await this.service.FindOneAsync<ToDoListModel, ToDoList, int>(id, cancellationToken);
-            return this.Ok(result);
+            var updated = await this.service.UpdateAsync<UpdateToDoListModel, ToDoList, int>(model, cancellationToken);
+                        
+            return updated.ToActionResult();
         }
 
         [HttpPatch("{id}")]

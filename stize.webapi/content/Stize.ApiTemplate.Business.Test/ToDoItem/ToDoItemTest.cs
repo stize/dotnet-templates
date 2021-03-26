@@ -5,14 +5,15 @@ using Moq;
 using Stize.ApiTemplate.Business.Models.ToDoItem;
 using Stize.ApiTemplate.Business.Services;
 using Stize.ApiTemplate.Domain.EFCore;
+using Stize.DotNet.Result;
 using Stize.DotNet.Search.Filter;
 using Stize.DotNet.Search.Page;
 using Stize.DotNet.Search.Specification;
 using Stize.DotNet.Specification;
 using Stize.Persistence;
 using Stize.Persistence.EntityFrameworkCore;
-using Stize.Persistence.Query;
-using Stize.Persistence.QueryResult;
+using Stize.Persistence.Inquiry;
+using Stize.Persistence.InquiryDispatcher;
 using Xunit;
 
 namespace Stize.ApiTemplate.Business.Test.ToDoItem
@@ -21,15 +22,15 @@ namespace Stize.ApiTemplate.Business.Test.ToDoItem
     {
         private readonly ITodoItemService service;
         private readonly Mock<IEntityRepository<EntityDbContext>> repositoryMoq;
-        private readonly Mock<IQueryDispatcher> queryDispatcherMoq;
+        private readonly Mock<IInquiryDispatcher> inquiryDispatcherMoq;
         private readonly Mock<ISpecificationBuilder> specificationBuilderMoq;
 
         public ToDoItemTest()
         {
             this.repositoryMoq = new Mock<IEntityRepository<EntityDbContext>>(MockBehavior.Strict);
-            this.queryDispatcherMoq = new Mock<IQueryDispatcher>(MockBehavior.Strict);
+            this.inquiryDispatcherMoq = new Mock<IInquiryDispatcher>(MockBehavior.Strict);
             this.specificationBuilderMoq = new Mock<ISpecificationBuilder>(MockBehavior.Strict);
-            this.service = new TodoItemService(repositoryMoq.Object, this.queryDispatcherMoq.Object, this.specificationBuilderMoq.Object);
+            this.service = new TodoItemService(this.repositoryMoq.Object, this.inquiryDispatcherMoq.Object, this.specificationBuilderMoq.Object);
         }
 
         [Fact]
@@ -63,13 +64,13 @@ namespace Stize.ApiTemplate.Business.Test.ToDoItem
             // Arrange
             const int todoListId = 1;
 
-            this.queryDispatcherMoq
-                .Setup(qd => qd.DispatchAsync<Query<Domain.Entities.ToDoItem>, MultipleQueryResult<ToDoItemModel>>(It.IsAny<Query<Domain.Entities.ToDoItem>>(), default))
-                .ReturnsAsync((Query<Domain.Entities.ToDoItem> q, CancellationToken _) =>
+            this.inquiryDispatcherMoq
+                .Setup(qd => qd.HandleAsync(It.IsAny<MultipleValueInquiry<Domain.Entities.ToDoItem, ToDoItemModel>>(), default))
+                .ReturnsAsync((MultipleValueInquiry<Domain.Entities.ToDoItem, ToDoItemModel> q, CancellationToken _) =>
                 {
-                    return new MultipleQueryResult<ToDoItemModel>()
+                    return new MultipleValueResult<ToDoItemModel>()
                     {
-                        Result = new ToDoItemModel[1]
+                        Value = new ToDoItemModel[1]
                     };
                 });
             
@@ -77,7 +78,7 @@ namespace Stize.ApiTemplate.Business.Test.ToDoItem
             var todoItems = await this.service.GetAllAsync<ToDoItemModel>(todoListId, default);
             
             // Assert
-            Assert.NotEmpty(todoItems.Result);
+            Assert.NotEmpty(todoItems.Value);
         }
 
         [Fact]
@@ -91,13 +92,13 @@ namespace Stize.ApiTemplate.Business.Test.ToDoItem
                 .Setup(sb => sb.Create<Domain.Entities.ToDoItem>(It.IsAny<IEnumerable<FilterDescriptor>>()))
                 .Returns(() => Specification<Domain.Entities.ToDoItem>.True);
 
-            this.queryDispatcherMoq
-                .Setup(qd => qd.DispatchAsync<PagedQuery<Domain.Entities.ToDoItem>, PagedQueryResult<ToDoItemModel>>(It.IsAny<PagedQuery<Domain.Entities.ToDoItem>>(), default))
-                .ReturnsAsync((PagedQuery<Domain.Entities.ToDoItem> q, CancellationToken _) =>
+            this.inquiryDispatcherMoq
+                .Setup(qd => qd.HandleAsync(It.IsAny<PagedValueInquiry<Domain.Entities.ToDoItem, ToDoItemModel>>(), default))
+                .ReturnsAsync((PagedValueInquiry<Domain.Entities.ToDoItem, ToDoItemModel> q, CancellationToken _) =>
                 {
-                    return new PagedQueryResult<ToDoItemModel>()
+                    return new PagedValueResult<ToDoItemModel>()
                     {
-                        Result = new ToDoItemModel[1]
+                        Value = new ToDoItemModel[1]
                     };
                 });
             
@@ -105,7 +106,7 @@ namespace Stize.ApiTemplate.Business.Test.ToDoItem
             var todoItems = await this.service.SearchAsync<ToDoItemModel>(todoListId, pageMoq.Object, default);
             
             // Assert
-            Assert.NotEmpty(todoItems.Result);
+            Assert.NotEmpty(todoItems.Value);
         }
     }
 }

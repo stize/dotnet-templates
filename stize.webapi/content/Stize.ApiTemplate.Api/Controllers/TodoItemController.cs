@@ -30,7 +30,7 @@ namespace Stize.ApiTemplate.Api.Controllers
         public async Task<IActionResult> GetAsync(int todoListId, CancellationToken cancellationToken = default)
         {
             var result = await this.todoItemService.GetAllAsync<ToDoItemModel>(todoListId, cancellationToken);
-            return this.Ok(result.Result);
+            return this.Ok(result.Value);
         }
 
         [HttpPost("Search")]
@@ -72,18 +72,12 @@ namespace Stize.ApiTemplate.Api.Controllers
         {
             if (id != model.Id)
             {
-                return this.BadRequest("ToDoItem ID are different in the route and the model");
+                return this.BadRequest("ToDoItem ID is different in the route and the model");
             }
+                        
+            var updated = await this.service.UpdateAsync<UpdateToDoItemModel, ToDoItem, int>(model, cancellationToken);
 
-            var exists = await this.service.AnyAsync(new ToDoItemByIdSpecification(todoListId, id), cancellationToken);
-            if (!exists)
-            {
-                return this.NotFound();
-            }
-            await this.service.ApplyChangesAsync<UpdateToDoItemModel, ToDoItem, int>(model, cancellationToken);
-
-            var result = await this.service.FindOneAsync<ToDoItemModel, ToDoItem, int>(id, cancellationToken);
-            return this.Ok(result);
+            return updated.ToActionResult();
         }
 
         [HttpPatch("{id}")]

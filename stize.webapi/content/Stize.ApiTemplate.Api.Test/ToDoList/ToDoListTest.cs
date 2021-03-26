@@ -8,13 +8,13 @@ using Stize.ApiTemplate.Business.Services;
 using Stize.ApiTemplate.Domain.EFCore;
 using Stize.ApiTemplate.Domain.Specifications;
 using Stize.DotNet.Delta;
+using Stize.DotNet.Result;
+using Stize.DotNet.Search.Filter;
 using Stize.DotNet.Search.Model;
 using Stize.DotNet.Search.Sort;
 using Stize.Hosting.AspNetCore.ActionResult;
 using Stize.Mapping.Service;
-using Stize.Persistence.QueryResult;
 using Xunit;
-using FilterDescriptor = Stize.DotNet.Search.Filter.FilterDescriptor;
 
 namespace Stize.ApiTemplate.Api.Test.ToDoList
 {
@@ -62,9 +62,9 @@ namespace Stize.ApiTemplate.Api.Test.ToDoList
             };
             this.toDoListServiceMock
                 .Setup(ms => ms.SearchAsync(page, default))
-                .ReturnsAsync(() => new PagedQueryResult<ToDoListModel>()
+                .ReturnsAsync(() => new PagedValueResult<ToDoListModel>()
                 {
-                    Result = new ToDoListModel[1]
+                    Value = new ToDoListModel[1]
                 });
 
             // Act            
@@ -125,10 +125,10 @@ namespace Stize.ApiTemplate.Api.Test.ToDoList
                 .Setup(ms => ms.AnyAsync(It.IsAny<EntityByIdSpecification<Domain.Entities.ToDoList>>(), default))
                 .ReturnsAsync(() => true);
 
-            var updateModel = new UpdateToDoListModel() ;  
+            var updateModel = new UpdateToDoListModel() { Id = id } ;  
             this.mappingServiceMock
-                .Setup(ms => ms.ApplyChangesAsync<UpdateToDoListModel, Domain.Entities.ToDoList, int>(updateModel, default))
-                .Returns(Task.CompletedTask);
+                .Setup(ms => ms.UpdateAsync<UpdateToDoListModel, Domain.Entities.ToDoList, int>(updateModel, default))
+                .Returns(Task.FromResult(Result<int>.Success(id)));
 
             this.mappingServiceMock
                 .Setup(ms => ms.FindOneAsync<ToDoListModel, Domain.Entities.ToDoList, int>(id, default))
@@ -140,9 +140,8 @@ namespace Stize.ApiTemplate.Api.Test.ToDoList
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var model = Assert.IsAssignableFrom<ToDoListModel>(okResult.Value);
-            Assert.NotNull(model);
-            Assert.Equal(id, model.Id);
+            var model = Assert.IsAssignableFrom<int>(okResult.Value);
+            Assert.Equal(id, model);
         }
 
         [Fact]
@@ -158,7 +157,7 @@ namespace Stize.ApiTemplate.Api.Test.ToDoList
             var updateModel = new Delta<UpdateToDoListModel>() ;  
             this.mappingServiceMock
                 .Setup(ms => ms.PatchAsync<UpdateToDoListModel, Domain.Entities.ToDoList, int>(updateModel, default))
-                .Returns(Task.CompletedTask);
+                .Returns(Task.FromResult(Result<int>.Success(id)));
 
             this.mappingServiceMock
                 .Setup(ms => ms.FindOneAsync<ToDoListModel, Domain.Entities.ToDoList, int>(id, default))
@@ -188,7 +187,7 @@ namespace Stize.ApiTemplate.Api.Test.ToDoList
 
             this.mappingServiceMock
                 .Setup(ms => ms.RemoveAsync<Domain.Entities.ToDoList, int>(id, default))
-                .Returns(Task.CompletedTask);
+                .Returns(Task.FromResult(Result<int>.Success(id)));
             
             // Act
             var result = await this.controller.DeleteAsync(id,  default);

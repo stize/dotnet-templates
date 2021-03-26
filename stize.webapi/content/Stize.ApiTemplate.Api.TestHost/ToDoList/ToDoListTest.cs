@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Net;
 using System.Net.Http.Json;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
@@ -129,8 +130,8 @@ namespace Stize.ApiTemplate.Api.TestHost.ToDoList
 
             // Assert
             Assert.True(response.IsSuccessStatusCode);
-            var result = await response.Content.ReadFromJsonAsync<ToDoListModel>();
-            Assert.Equal(updateToDoListModel.Name, result.Name);
+            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
+
 
         }
         

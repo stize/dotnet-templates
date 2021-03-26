@@ -1,7 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
+using Stize.DotNet.Result;
 using Stize.DotNet.Search.Page;
-using Stize.Persistence.QueryResult;
 
 namespace Stize.ApiTemplate.Business.Services
 {
@@ -9,10 +9,10 @@ namespace Stize.ApiTemplate.Business.Services
     {
         Task CompleteAsync(int id, CancellationToken cancellationToken);
         
-        Task<IMultipleQueryResult<T>> GetAllAsync<T>(int todoListId, CancellationToken cancellationToken) 
+        Task<MultipleValueResult<T>> GetAllAsync<T>(int todoListId, CancellationToken cancellationToken) 
             where T : class;
        
-        Task<IPagedQueryResult<T>> SearchAsync<T>(int todoListId, IPageDescriptor page, CancellationToken cancellationToken) 
+        Task<PagedValueResult<T>> SearchAsync<T>(int todoListId, IPageDescriptor page, CancellationToken cancellationToken) 
             where T : class;
     }
 }
