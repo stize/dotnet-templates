@@ -29,6 +29,7 @@ namespace Stize.ApiTemplate.Api.Extensions
 
             services.AddStizeAspNetCore();
             services.AddStizePersistence();
+            services.AddStizeMediator();
             //TODO: Materializers registration
             services.AddScoped<IMaterializer<Domain.Entities.ToDoList, ToDoListModel>, ToDoListModelMaterializer>();
             services.AddScoped<IMaterializer<Domain.Entities.ToDoItem, ToDoItemModel>, ToDoItemModelMaterializer>();

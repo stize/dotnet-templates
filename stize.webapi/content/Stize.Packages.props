@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-	<StizeVersion>0.0.3-alpha1</StizeVersion>
+	<StizeVersion>0.0.3-alpha2</StizeVersion>
   </PropertyGroup>  
   
   <ItemGroup Label="Stize">
@@ -29,5 +29,10 @@
 	
 	<PackageVersion Include="Stize.Testing.Xunit" Version="$(StizeVersion)" />
 	<PackageVersion Include="Stize.Testing.Xunit.AspNetCore" Version="$(StizeVersion)" />
+	
+	<PackageVersion Include="Stize.Mediator" Version="$(StizeVersion)" />
+	
+	<PackageVersion Include="Stize.CQRS" Version="$(StizeVersion)" />
+	<PackageVersion Include="Stize.CQRS.EntityFrameworkCore" Version="$(StizeVersion)" />
   </ItemGroup>  
 </Project>

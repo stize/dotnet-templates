@@ -12,10 +12,8 @@ using Stize.DotNet.Search.Filter;
 using Stize.DotNet.Search.Page;
 using Stize.DotNet.Search.Specification;
 using Stize.DotNet.Specification;
-using Stize.Persistence;
 using Stize.Persistence.EntityFrameworkCore;
 using Stize.Persistence.Inquiry;
-using Stize.Persistence.InquiryDispatcher;
 using Xunit;
 
 namespace Stize.ApiTemplate.Business.Test.ToDoItem
@@ -24,15 +22,13 @@ namespace Stize.ApiTemplate.Business.Test.ToDoItem
     {
         private readonly ITodoItemService service;
         private readonly Mock<IEntityRepository<EntityDbContext>> repositoryMoq;
-        private readonly Mock<IInquiryDispatcher> inquiryDispatcherMoq;
         private readonly Mock<ISpecificationBuilder> specificationBuilderMoq;
 
         public ToDoItemTest()
         {
             this.repositoryMoq = new Mock<IEntityRepository<EntityDbContext>>(MockBehavior.Strict);
-            this.inquiryDispatcherMoq = new Mock<IInquiryDispatcher>(MockBehavior.Strict);
             this.specificationBuilderMoq = new Mock<ISpecificationBuilder>(MockBehavior.Strict);
-            this.service = new TodoItemService(this.repositoryMoq.Object, this.inquiryDispatcherMoq.Object, this.specificationBuilderMoq.Object);
+            this.service = new TodoItemService(this.repositoryMoq.Object, this.specificationBuilderMoq.Object);
         }
 
         [Fact]
@@ -66,12 +62,12 @@ namespace Stize.ApiTemplate.Business.Test.ToDoItem
             // Arrange
             const int todoListId = 1;
 
-            this.repositoryMoq
-                .Setup(r => r.GetAll<Domain.Entities.ToDoItem>())
-                .Returns(() => Array.Empty<Domain.Entities.ToDoItem>().AsQueryable());
+            //this.repositoryMoq
+            //    .Setup(r => r.GetAll<Domain.Entities.ToDoItem>())
+            //    .Returns(() => Array.Empty<Domain.Entities.ToDoItem>().AsQueryable());
 
-            this.inquiryDispatcherMoq
-                .Setup(qd => qd.HandleAsync(It.IsAny<MultipleValueInquiry<Domain.Entities.ToDoItem, ToDoItemModel>>(), default))
+            this.repositoryMoq
+                .Setup(r => r.RunQueryAsync(It.IsAny<MultipleValueInquiry<Domain.Entities.ToDoItem, ToDoItemModel>>(), default))
                 .ReturnsAsync((MultipleValueInquiry<Domain.Entities.ToDoItem, ToDoItemModel> q, CancellationToken _) =>
                 {
                     return new MultipleValueResult<ToDoItemModel>()
@@ -93,9 +89,9 @@ namespace Stize.ApiTemplate.Business.Test.ToDoItem
             // Arrange
             const int todoListId = 1;
 
-            this.repositoryMoq
-                .Setup(r => r.GetAll<Domain.Entities.ToDoItem>())
-                .Returns(() => Array.Empty<Domain.Entities.ToDoItem>().AsQueryable());
+            //this.repositoryMoq
+            //    .Setup(r => r.GetAll<Domain.Entities.ToDoItem>())
+            //    .Returns(() => Array.Empty<Domain.Entities.ToDoItem>().AsQueryable());
 
             var pageMoq = new Mock<IPageDescriptor>();
 
@@ -103,8 +99,8 @@ namespace Stize.ApiTemplate.Business.Test.ToDoItem
                 .Setup(sb => sb.Create<Domain.Entities.ToDoItem>(It.IsAny<IEnumerable<FilterDescriptor>>()))
                 .Returns(() => Specification<Domain.Entities.ToDoItem>.True);
 
-            this.inquiryDispatcherMoq
-                .Setup(qd => qd.HandleAsync(It.IsAny<PagedValueInquiry<Domain.Entities.ToDoItem, ToDoItemModel>>(), default))
+            this.repositoryMoq
+                .Setup(r => r.RunQueryAsync(It.IsAny<PagedValueInquiry<Domain.Entities.ToDoItem, ToDoItemModel>>(), default))
                 .ReturnsAsync((PagedValueInquiry<Domain.Entities.ToDoItem, ToDoItemModel> q, CancellationToken _) =>
                 {
                     return new PagedValueResult<ToDoItemModel>()

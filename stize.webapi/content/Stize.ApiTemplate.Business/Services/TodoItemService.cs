@@ -9,20 +9,17 @@ using Stize.DotNet.Specification;
 using Stize.DotNet.Specification.Extensions;
 using Stize.Persistence.EntityFrameworkCore;
 using Stize.Persistence.Inquiry;
-using Stize.Persistence.InquiryDispatcher;
 
 namespace Stize.ApiTemplate.Business.Services
 {
     public class TodoItemService : ITodoItemService
     {
         private readonly IEntityRepository<EntityDbContext> repository;
-        private readonly IInquiryDispatcher dispatcher;
         private readonly ISpecificationBuilder specificationBuilder;
 
-        public TodoItemService(IEntityRepository<EntityDbContext> repository, IInquiryDispatcher dispatcher, ISpecificationBuilder specificationBuilder)
+        public TodoItemService(IEntityRepository<EntityDbContext> repository, ISpecificationBuilder specificationBuilder)
         {
             this.repository = repository;
-            this.dispatcher = dispatcher;
             this.specificationBuilder = specificationBuilder;
         }
 
@@ -41,9 +38,8 @@ namespace Stize.ApiTemplate.Business.Services
             var query = new MultipleValueInquiry<ToDoItem, T>()
             {
                 SourceSpecification = spec,
-                SourceQuery = this.repository.GetAll<ToDoItem>()
             };
-            var result = await this.dispatcher.HandleAsync(query, cancellationToken);
+            var result = await this.repository.RunQueryAsync(query, cancellationToken);
             return result;
         }
 
@@ -58,9 +54,8 @@ namespace Stize.ApiTemplate.Business.Services
                 Skip = page.Skip,
                 SourceSpecification = spec,
                 SourceSorts = page.Sorts,
-                SourceQuery = this.repository.GetAll<ToDoItem>()
             };
-            var result = await this.dispatcher.HandleAsync(query, cancellationToken);
+            var result = await this.repository.RunQueryAsync(query, cancellationToken);
             return result;
         }
     }
