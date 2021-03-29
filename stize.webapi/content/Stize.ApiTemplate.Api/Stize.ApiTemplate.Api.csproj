@@ -8,6 +8,7 @@
     <PackageReference Include="Stize.Mapping.Service" />
     <PackageReference Include="Stize.Hosting.AspNetCore" />
     <PackageReference Include="Stize.Mapping.AutoMapper" />
+	  <PackageReference Include="Stize.CQRS.EntityFrameworkCore" />
   </ItemGroup>
 
   <ItemGroup>
