@@ -40,7 +40,7 @@ namespace Stize.ApiTemplate.Api.Extensions
 
             //TODO: Materializers registration
             services.AddScoped<IMaterializer<Domain.Entities.ToDoList, ToDoListModel>, ToDoListModelMaterializer>();
-            services.AddScoped<IEntityBuilder<ToDoListModel, Domain.Entities.ToDoList, int>, ToDoListModelEntityBuilder>();
+            services.AddScoped<IEntityBuilder<Domain.Entities.ToDoList, int>, ToDoListModelEntityBuilder>();
             services.AddScoped<IMaterializer<Domain.Entities.ToDoItem, ToDoItemModel>, ToDoItemModelMaterializer>();
             services.AddScoped<IToDoListService, ToDoListService>();
             services.AddScoped<ITodoItemService, TodoItemService>();

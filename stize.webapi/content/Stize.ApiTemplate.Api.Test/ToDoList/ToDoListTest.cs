@@ -3,6 +3,7 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Moq;
 using Stize.ApiTemplate.Api.Controllers;
+using Stize.ApiTemplate.Api.Model;
 using Stize.ApiTemplate.Business.Models.ToDoList;
 using Stize.ApiTemplate.Business.Services;
 using Stize.ApiTemplate.Domain.EFCore;
@@ -169,7 +170,7 @@ namespace Stize.ApiTemplate.Api.Test.ToDoList
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var model = Assert.IsAssignableFrom<ToDoListModel>(okResult.Value);
+            var model = Assert.IsAssignableFrom<IdModel<int>>(okResult.Value);
             Assert.NotNull(model);
             Assert.Equal(id, model.Id);
         }
@@ -193,7 +194,10 @@ namespace Stize.ApiTemplate.Api.Test.ToDoList
             var result = await this.controller.DeleteAsync(id,  default);
 
             // Assert
-            var okResult = Assert.IsType<OkResult>(result);
+            var okResult = Assert.IsType<OkObjectResult>(result);
+            var model = Assert.IsAssignableFrom<IdModel<int>>(okResult.Value);
+            Assert.NotNull(model);
+            Assert.Equal(id, model.Id);
         }
     }
 }

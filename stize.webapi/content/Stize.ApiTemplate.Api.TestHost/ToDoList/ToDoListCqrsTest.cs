@@ -16,9 +16,9 @@ using Xunit.Abstractions;
 
 namespace Stize.ApiTemplate.Api.TestHost.ToDoList
 {
-    public class ToDoListTest : BaseTest
+    public class ToDoListCqrsTest : BaseTest
     {
-        public ToDoListTest(WebApplicationFactory<Startup> fixture, ITestOutputHelper output) : base(fixture, output)
+        public ToDoListCqrsTest(WebApplicationFactory<Startup> fixture, ITestOutputHelper output) : base(fixture, output)
         {
 
         }
@@ -34,7 +34,7 @@ namespace Stize.ApiTemplate.Api.TestHost.ToDoList
 
             var request = this.Fixture
                 .Server
-                .CreateApiRequest<ToDoListController>(c => c.GetAsync(default))
+                .CreateApiRequest<ToDoListCqrsController>(c => c.GetAsync(default))
                 .WithIdentity(Identities.Basic);
             // Act
             var response = await request.SendAsync(HttpMethods.Get);
@@ -65,7 +65,7 @@ namespace Stize.ApiTemplate.Api.TestHost.ToDoList
             };
             var request = this.Fixture
                 .Server
-                .CreateApiRequest<ToDoListController>(c => c.SearchAsync(page, default))
+                .CreateApiRequest<ToDoListCqrsController>(c => c.SearchAsync(page, default))
                 .WithIdentity(Identities.Basic);
             // Act
             var response = await request.SendAsync(HttpMethods.Post);
@@ -93,7 +93,7 @@ namespace Stize.ApiTemplate.Api.TestHost.ToDoList
 
             var request = this.Fixture
                 .Server
-                .CreateApiRequest<ToDoListController>(c => c.PostAsync(createModel, default))
+                .CreateApiRequest<ToDoListCqrsController>(c => c.PostAsync(createModel, default))
                 .WithIdentity(Identities.Basic);
             // Act
             var response = await request.SendAsync(HttpMethods.Post);
@@ -123,7 +123,7 @@ namespace Stize.ApiTemplate.Api.TestHost.ToDoList
 
             var request = this.Fixture
                                 .Server
-                                .CreateApiRequest<ToDoListController>(c => c.PutAsync(entity.Id, updateToDoListModel, default))
+                                .CreateApiRequest<ToDoListCqrsController>(c => c.PutAsync(entity.Id, updateToDoListModel, default))
                                 .WithIdentity(Identities.Basic);
             // Act
             var response = await request.SendAsync(HttpMethods.Put);
@@ -151,7 +151,7 @@ namespace Stize.ApiTemplate.Api.TestHost.ToDoList
 
             var request = this.Fixture
                                 .Server
-                                .CreateApiRequest<ToDoListController>(c => c.PatchAsync(entity.Id, delta, default))
+                                .CreateApiRequest<ToDoListCqrsController>(c => c.PatchAsync(entity.Id, delta, default))
                                 .WithIdentity(Identities.Basic);
             // Act
             var response = await request.SendAsync(HttpMethods.Patch);
@@ -173,14 +173,13 @@ namespace Stize.ApiTemplate.Api.TestHost.ToDoList
             
             var request = this.Fixture
                                 .Server
-                                .CreateApiRequest<ToDoListController>(c => c.DeleteAsync(entity.Id, default))
+                                .CreateApiRequest<ToDoListCqrsController>(c => c.DeleteAsync(entity.Id, default))
                                 .WithIdentity(Identities.Basic);
             // Act
             var response = await request.SendAsync(HttpMethods.Delete);
 
             // Assert
             Assert.True(response.IsSuccessStatusCode);
-            Assert.Equal(HttpStatusCode.OK, response.StatusCode);
 
         }
     }

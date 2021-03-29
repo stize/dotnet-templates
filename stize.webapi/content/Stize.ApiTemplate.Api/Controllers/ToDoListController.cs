@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Stize.ApiTemplate.Api.Model;
 using Stize.ApiTemplate.Business.Models.ToDoList;
 using Stize.ApiTemplate.Business.Services;
 using Stize.ApiTemplate.Domain.EFCore;
@@ -56,7 +57,7 @@ namespace Stize.ApiTemplate.Api.Controllers
         public async Task<IActionResult> PostAsync([FromBody] CreateToDoListModel model, CancellationToken cancellationToken = default)
         {
             var id = await this.service.AddAsync<CreateToDoListModel, ToDoList, int>(model, cancellationToken);
-            return this.CreatedAtAction("GetAsync", new { Id = id });
+            return this.CreatedAtAction("GetAsync", new IdModel<int> { Id = id });
         }
 
         [HttpPut("{id}")]
@@ -82,9 +83,7 @@ namespace Stize.ApiTemplate.Api.Controllers
             }
 
             await this.service.PatchAsync<UpdateToDoListModel, ToDoList, int>(model, cancellationToken);
-
-            var result = await this.service.FindOneAsync<ToDoListModel, ToDoList, int>(id, cancellationToken);
-            return this.Ok(result);
+            return this.Ok(new IdModel<int> { Id = id });
         }
 
         [HttpDelete("{id}")]
@@ -97,7 +96,7 @@ namespace Stize.ApiTemplate.Api.Controllers
             }
 
             await this.service.RemoveAsync<ToDoList, int>(id, cancellationToken);
-            return this.Ok();
+            return this.Ok(new IdModel<int> { Id = id });
         }
     }
 }

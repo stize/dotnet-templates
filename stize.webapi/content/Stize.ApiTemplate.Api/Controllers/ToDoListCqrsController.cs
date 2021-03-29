@@ -1,6 +1,7 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Stize.ApiTemplate.Api.Model;
 using Stize.ApiTemplate.Business.Models.ToDoList;
 using Stize.ApiTemplate.Business.Services;
 using Stize.ApiTemplate.Domain.EFCore;
@@ -73,7 +74,7 @@ namespace Stize.ApiTemplate.Api.Controllers
 
                 return new BadRequestObjectResult(problemDetails);
             }
-            return this.CreatedAtAction("GetAsync", new { Id = result.Value });
+            return this.CreatedAtAction("GetAsync", new IdModel<int> { Id = result.Value });
         }
 
         [HttpPut("{id}")]
@@ -94,7 +95,7 @@ namespace Stize.ApiTemplate.Api.Controllers
                 return new BadRequestObjectResult(problemDetails);
             }
 
-            return this.Ok(result.Value);
+            return this.Ok(new IdModel<int> { Id = result.Value });
         }
 
         [HttpPatch("{id}")]
@@ -115,7 +116,7 @@ namespace Stize.ApiTemplate.Api.Controllers
                 return new BadRequestObjectResult(problemDetails);
             }
 
-            return this.Ok(result.Value);
+            return this.Ok(new IdModel<int> { Id = result.Value });
         }
 
         [HttpDelete("{id}")]
@@ -130,7 +131,7 @@ namespace Stize.ApiTemplate.Api.Controllers
 
                 return new BadRequestObjectResult(problemDetails);
             }
-            return this.Ok();
+            return this.Ok(new IdModel<int> { Id = result.Value });
         }
     }
 }
