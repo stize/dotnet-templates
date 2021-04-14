@@ -1,6 +1,6 @@
 <Project>
   <PropertyGroup>
-	<StizeVersion>0.0.3-alpha4</StizeVersion>
+	<StizeVersion>0.0.3</StizeVersion>
   </PropertyGroup>  
   
   <ItemGroup Label="Stize">
