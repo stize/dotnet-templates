@@ -8,6 +8,8 @@ using Stize.ApiTemplate.Business.Models.ToDoList;
 using Stize.ApiTemplate.Business.Services;
 using Stize.ApiTemplate.Domain.EFCore;
 using Stize.ApiTemplate.Domain.Specifications;
+using Stize.CQRS.EntityFrameworkCore.Command;
+using Stize.CQRS.EntityFrameworkCore.Query;
 using Stize.DotNet.Delta;
 using Stize.DotNet.Result;
 using Stize.DotNet.Search.Filter;
@@ -15,33 +17,35 @@ using Stize.DotNet.Search.Model;
 using Stize.DotNet.Search.Sort;
 using Stize.Hosting.AspNetCore.ActionResult;
 using Stize.Mapping.Service;
+using Stize.Mediator;
 using Xunit;
 
 namespace Stize.ApiTemplate.Api.Test.ToDoList
 {
-    public class ToDoListTest
+    public class ToDoListCqrsTest
     {
-        private readonly ToDoListController controller;
-        private readonly Mock<IMappingService<EntityDbContext>> mappingServiceMock;
-        private readonly Mock<IToDoListService> toDoListServiceMock;
-        private readonly MockRepository mockRepository;
-       
+        
+        private readonly MockRepository mockRepository;        
+        private readonly Mock<IMediator> mediatorMock;
+        private readonly ToDoListCqrsController controller;
 
-        public ToDoListTest()
+        public ToDoListCqrsTest()
         {
             this.mockRepository = new MockRepository(MockBehavior.Strict);
-            this.mappingServiceMock = this.mockRepository.Create<IMappingService<EntityDbContext>>();
-            this.toDoListServiceMock = this.mockRepository.Create<IToDoListService>();
-            this.controller = new ToDoListController(this.mappingServiceMock.Object, this.toDoListServiceMock.Object);
+            this.mediatorMock = this.mockRepository.Create<IMediator>();
+            this.controller = new ToDoListCqrsController(this.mediatorMock.Object);
         }
 
         [Fact]
         public async Task GetAllAsyncTest()
         {
             // Arrange
-            this.mappingServiceMock
-                .Setup(ms => ms.GetAllAsync<ToDoListModel, Domain.Entities.ToDoList>(default))
-                .ReturnsAsync(() => new ToDoListModel[1]);
+            this.mediatorMock
+                .Setup(m => m.HandleAsync(It.IsAny<GetAllModelsFromEntityQuery<ToDoListModel, Domain.Entities.ToDoList, int, EntityDbContext>>(), default))
+                .ReturnsAsync(() => new MultipleValueResult<ToDoListModel>
+                {
+                    Value = new ToDoListModel[1]
+                });
 
             // Act
             var result = await this.controller.GetAsync(default);
@@ -61,9 +65,9 @@ namespace Stize.ApiTemplate.Api.Test.ToDoList
                 Filters = new List<FilterDescriptor>(),
                 Sorts = new List<SortDescriptor>()
             };
-            this.toDoListServiceMock
-                .Setup(ms => ms.SearchAsync(page, default))
-                .ReturnsAsync(() => new PagedValueResult<ToDoListModel>()
+            this.mediatorMock
+                .Setup(m => m.HandleAsync(It.IsAny<GetAllModelsFromEntityByPageQuery<ToDoListModel, Domain.Entities.ToDoList, int, EntityDbContext>>(), default))
+                .ReturnsAsync(() => new PagedValueResult<ToDoListModel>
                 {
                     Value = new ToDoListModel[1]
                 });
@@ -82,9 +86,12 @@ namespace Stize.ApiTemplate.Api.Test.ToDoList
         {
             // Arrange
             const int id = 1;
-            this.mappingServiceMock
-                .Setup(ms => ms.FindOneAsync<ToDoListModel, Domain.Entities.ToDoList, int>(id, default))
-                .ReturnsAsync(() => new ToDoListModel());
+            this.mediatorMock
+                .Setup(m => m.HandleAsync(It.IsAny<GetModelFromEntityByIdQuery<ToDoListModel, Domain.Entities.ToDoList, int, EntityDbContext>>(), default))
+                .ReturnsAsync(() => new SingleValueResult<ToDoListModel>
+                {
+                    Value = new ToDoListModel()
+                });
 
             // Act
             var result = await this.controller.GetAsync(id, default);
@@ -100,10 +107,10 @@ namespace Stize.ApiTemplate.Api.Test.ToDoList
         {
             // Arrange
             const int createdId = 1;
-            var createModel = new CreateToDoListModel() ;    
-            this.mappingServiceMock
-                .Setup(ms => ms.AddAsync<CreateToDoListModel, Domain.Entities.ToDoList, int>(createModel, default))
-                .ReturnsAsync(() => createdId);
+            var createModel = new CreateToDoListModel() ;
+            this.mediatorMock
+                .Setup(m => m.HandleAsync(It.IsAny<CreateEntityFromModelCommand<CreateToDoListModel, Domain.Entities.ToDoList, int, EntityDbContext>>(), default))
+                .ReturnsAsync(() => Result<int>.Success(createdId));
 
             // Act
             var result = await this.controller.PostAsync(createModel, default);
@@ -121,19 +128,10 @@ namespace Stize.ApiTemplate.Api.Test.ToDoList
         {
             // Arrange
             const int id = 1;
-              
-            this.mappingServiceMock
-                .Setup(ms => ms.AnyAsync(It.IsAny<EntityByIdSpecification<Domain.Entities.ToDoList>>(), default))
-                .ReturnsAsync(() => true);
-
-            var updateModel = new UpdateToDoListModel() { Id = id } ;  
-            this.mappingServiceMock
-                .Setup(ms => ms.UpdateAsync<UpdateToDoListModel, Domain.Entities.ToDoList, int>(updateModel, default))
-                .Returns(Task.FromResult(Result<int>.Success(id)));
-
-            this.mappingServiceMock
-                .Setup(ms => ms.FindOneAsync<ToDoListModel, Domain.Entities.ToDoList, int>(id, default))
-                .ReturnsAsync(() => new ToDoListModel {Id = id});
+            var updateModel = new UpdateToDoListModel() { Id = id } ;
+            this.mediatorMock
+               .Setup(m => m.HandleAsync(It.IsAny<UpdateEntityFromModelCommand<UpdateToDoListModel, Domain.Entities.ToDoList, int, EntityDbContext>>(), default))
+               .ReturnsAsync(() => Result<int>.Success(id));
 
 
             // Act
@@ -141,8 +139,8 @@ namespace Stize.ApiTemplate.Api.Test.ToDoList
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
-            var model = Assert.IsAssignableFrom<int>(okResult.Value);
-            Assert.Equal(id, model);
+            var model = Assert.IsAssignableFrom<IdModel<int>>(okResult.Value);
+            Assert.Equal(id, model.Id);
         }
 
         [Fact]
@@ -150,53 +148,37 @@ namespace Stize.ApiTemplate.Api.Test.ToDoList
         {
             // Arrange
             const int id = 1;
-              
-            this.mappingServiceMock
-                .Setup(ms => ms.AnyAsync(It.IsAny<EntityByIdSpecification<Domain.Entities.ToDoList>>(), default))
-                .ReturnsAsync(() => true);
-
-            var updateModel = new Delta<UpdateToDoListModel>() ;  
-            this.mappingServiceMock
-                .Setup(ms => ms.PatchAsync<UpdateToDoListModel, Domain.Entities.ToDoList, int>(updateModel, default))
-                .Returns(Task.FromResult(Result<int>.Success(id)));
-
-            this.mappingServiceMock
-                .Setup(ms => ms.FindOneAsync<ToDoListModel, Domain.Entities.ToDoList, int>(id, default))
-                .ReturnsAsync(() => new ToDoListModel {Id = id});
+            var delta = new Delta<UpdateToDoListModel>() ;
+            delta.TrySetPropertyValue(nameof(UpdateToDoListModel.Id), id);
+            this.mediatorMock
+              .Setup(m => m.HandleAsync(It.IsAny<PatchEntityFromModelCommand<UpdateToDoListModel, Domain.Entities.ToDoList, int, EntityDbContext>>(), default))
+              .ReturnsAsync(() => Result<int>.Success(id));
 
 
             // Act
-            var result = await this.controller.PatchAsync(id, updateModel, default);
+            var result = await this.controller.PatchAsync(id, delta, default);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
             var model = Assert.IsAssignableFrom<IdModel<int>>(okResult.Value);
-            Assert.NotNull(model);
             Assert.Equal(id, model.Id);
         }
-
         
         [Fact]
         public async Task DeleteAsyncTest()
         {
             // Arrange
             const int id = 1;
-              
-            this.mappingServiceMock
-                .Setup(ms => ms.AnyAsync(It.IsAny<EntityByIdSpecification<Domain.Entities.ToDoList>>(), default))
-                .ReturnsAsync(() => true);
+            this.mediatorMock
+              .Setup(m => m.HandleAsync(It.IsAny<DeleteEntityByIdCommand<Domain.Entities.ToDoList, int, EntityDbContext>>(), default))
+              .ReturnsAsync(() => Result<int>.Success(id));
 
-            this.mappingServiceMock
-                .Setup(ms => ms.RemoveAsync<Domain.Entities.ToDoList, int>(id, default))
-                .Returns(Task.FromResult(Result<int>.Success(id)));
-            
             // Act
             var result = await this.controller.DeleteAsync(id,  default);
 
             // Assert
             var okResult = Assert.IsType<OkObjectResult>(result);
             var model = Assert.IsAssignableFrom<IdModel<int>>(okResult.Value);
-            Assert.NotNull(model);
             Assert.Equal(id, model.Id);
         }
     }

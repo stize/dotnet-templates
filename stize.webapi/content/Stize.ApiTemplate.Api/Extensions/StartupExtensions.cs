@@ -29,19 +29,22 @@ namespace Stize.ApiTemplate.Api.Extensions
 
             services.AddStizeAspNetCore();
             services.AddStizePersistence();
-            //TODO: Materializers registration
-            services.AddScoped<IMaterializer<Domain.Entities.ToDoList, ToDoListModel>, ToDoListModelMaterializer>();
-            services.AddScoped<IMaterializer<Domain.Entities.ToDoItem, ToDoItemModel>, ToDoItemModelMaterializer>();
+            services.AddStizeMediator();
+            services.AddScoped<ISpecificationBuilder, SpecificationBuilder>();
 
             services.AddStizeEntityDbContext<EntityDbContext>(configureEntityDbContext);
             services.AddStizeEntityRepository();
             services.AddStizeAutoMapper(typeof(ToDoListModel).Assembly);
             services.AddStizeMapperService();
+            services.AddStizeCqrsEntityFrameworkCore();
 
-
+            //TODO: Materializers registration
+            services.AddScoped<IMaterializer<Domain.Entities.ToDoList, ToDoListModel>, ToDoListModelMaterializer>();
+            services.AddScoped<IEntityBuilder<Domain.Entities.ToDoList, int>, ToDoListModelEntityBuilder>();
+            services.AddScoped<IMaterializer<Domain.Entities.ToDoItem, ToDoItemModel>, ToDoItemModelMaterializer>();
             services.AddScoped<IToDoListService, ToDoListService>();
             services.AddScoped<ITodoItemService, TodoItemService>();
-            services.AddScoped<ISpecificationBuilder, SpecificationBuilder>();
+            
 
             return services;
         }

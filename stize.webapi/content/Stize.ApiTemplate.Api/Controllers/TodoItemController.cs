@@ -15,12 +15,12 @@ namespace Stize.ApiTemplate.Api.Controllers
 {
     [ApiController]
     [Route("ToDoList/{todoListId}/TodoItem")]
-    public class TodoItemController : ControllerBase
+    public class ToDoItemController : ControllerBase
     {
         private readonly IMappingService<EntityDbContext> service;
         private readonly ITodoItemService todoItemService;
 
-        public TodoItemController(IMappingService<EntityDbContext> service, ITodoItemService todoItemService)
+        public ToDoItemController(IMappingService<EntityDbContext> service, ITodoItemService todoItemService)
         {
             this.service = service;
             this.todoItemService = todoItemService;
@@ -30,7 +30,7 @@ namespace Stize.ApiTemplate.Api.Controllers
         public async Task<IActionResult> GetAsync(int todoListId, CancellationToken cancellationToken = default)
         {
             var result = await this.todoItemService.GetAllAsync<ToDoItemModel>(todoListId, cancellationToken);
-            return this.Ok(result.Result);
+            return this.Ok(result.Value);
         }
 
         [HttpPost("Search")]
@@ -57,7 +57,7 @@ namespace Stize.ApiTemplate.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> PostAsync(int todoListId, CreateToDoItemModel model, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> PostAsync(int todoListId, [FromBody] CreateToDoItemModel model, CancellationToken cancellationToken = default)
         {
             if (todoListId != model.ToDoListId)
             {
@@ -68,26 +68,20 @@ namespace Stize.ApiTemplate.Api.Controllers
         }
 
         [HttpPut("{id}")]
-        public async Task<IActionResult> PutAsync(int todoListId, int id, UpdateToDoItemModel model, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> PutAsync(int todoListId, int id, [FromBody] UpdateToDoItemModel model, CancellationToken cancellationToken = default)
         {
             if (id != model.Id)
             {
-                return this.BadRequest("ToDoItem ID are different in the route and the model");
+                return this.BadRequest("ToDoItem ID is different in the route and the model");
             }
+                        
+            var updated = await this.service.UpdateAsync<UpdateToDoItemModel, ToDoItem, int>(model, cancellationToken);
 
-            var exists = await this.service.AnyAsync(new ToDoItemByIdSpecification(todoListId, id), cancellationToken);
-            if (!exists)
-            {
-                return this.NotFound();
-            }
-            await this.service.ApplyChangesAsync<UpdateToDoItemModel, ToDoItem, int>(model, cancellationToken);
-
-            var result = await this.service.FindOneAsync<ToDoItemModel, ToDoItem, int>(id, cancellationToken);
-            return this.Ok(result);
+            return updated.ToActionResult();
         }
 
         [HttpPatch("{id}")]
-        public async Task<IActionResult> PatchAsync(int todoListId, int id, Delta<UpdateToDoItemModel> model, CancellationToken cancellationToken = default)
+        public async Task<IActionResult> PatchAsync(int todoListId, int id, [FromBody] Delta<UpdateToDoItemModel> model, CancellationToken cancellationToken = default)
         {
             if (id != model.GetInstance()?.Id)
             {
