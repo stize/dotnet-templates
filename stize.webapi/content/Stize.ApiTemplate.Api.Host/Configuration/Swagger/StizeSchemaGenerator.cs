@@ -1,6 +1,7 @@
 using System;
 using System.Reflection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc.ApiExplorer;
 using Microsoft.OpenApi.Models;
 using Stize.Domain.Model;
 using Stize.DotNet.Delta;
@@ -18,19 +19,20 @@ namespace Stize.ApiTemplate.Api.Host.Configuration.Swagger
         }
 
         public OpenApiSchema GenerateSchema(
-            Type type,
+            Type modelType,
             SchemaRepository schemaRepository,
             MemberInfo memberInfo = null,
-            ParameterInfo parameterInfo = null)
+            ParameterInfo parameterInfo = null,
+            ApiParameterRouteInfo routeInfo = null)
         {
-            if (type.IsConstructedGenericType && Delta.IsDelta(type))
+            if (modelType.IsConstructedGenericType && Delta.IsDelta(modelType))
             {
-                var deltaTpe = type.GetGenericArguments()[0];
+                var deltaTpe = modelType.GetGenericArguments()[0];
                 var result = this.defaultSchemaGenerator.GenerateSchema(deltaTpe, schemaRepository, memberInfo, parameterInfo);
                 return result;
             }
 
-            if (typeof(MultiUploadedFileModel).IsAssignableFrom(type))
+            if (typeof(MultiUploadedFileModel).IsAssignableFrom(modelType))
             {
                 var formType = typeof(IFormFile);
                 var result = this.defaultSchemaGenerator.GenerateSchema(formType, schemaRepository, memberInfo, parameterInfo);
@@ -38,7 +40,8 @@ namespace Stize.ApiTemplate.Api.Host.Configuration.Swagger
                 return result;
             }
 
-            return this.defaultSchemaGenerator.GenerateSchema(type, schemaRepository, memberInfo, parameterInfo);
+            return this.defaultSchemaGenerator.GenerateSchema(modelType, schemaRepository, memberInfo, parameterInfo);
         }
+
     }
 }
